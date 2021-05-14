@@ -42,7 +42,8 @@ async function HeinousBuild() {
             await fs_1.default.promises.mkdir(destDirPath);
         let filePath = path_1.join(srcDirPath, file);
         let fileOutputPath = path_1.join(destDirPath, file);
-        let fileContents = await fs_1.default.promises.readFile(filePath).toString();
+        let fileContentsBuffer = await fs_1.default.promises.readFile(filePath);
+        let fileContents = fileContentsBuffer.toString();
         let shouldWrite = false;
         for (let aliasTarget of Object.keys(config.map)) {
             let importRegex = new RegExp("(?<=import[^']*')(" + aliasTarget + ")(?=';\n)", 'ig');

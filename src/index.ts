@@ -26,7 +26,8 @@ export async function HeinousBuild() {
 
         let filePath = join(srcDirPath, file);
         let fileOutputPath = join(destDirPath, file);
-        let fileContents = await fs.promises.readFile(filePath).toString();
+        let fileContentsBuffer = await fs.promises.readFile(filePath);
+        let fileContents = fileContentsBuffer.toString();
 
         let shouldWrite = false;
 
