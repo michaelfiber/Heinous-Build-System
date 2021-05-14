@@ -1,4 +1,4 @@
-import fs, { copyFileSync, existsSync, watch } from "fs";
+import fs, { copyFileSync, existsSync, mkdirSync, readFileSync, watch, writeFileSync } from "fs";
 import { join } from "path";
 
 export async function HeinousBuild() {
@@ -15,18 +15,18 @@ export async function HeinousBuild() {
     let srcDirPath = join(process.cwd(), config.src);
     let destDirPath = join(process.cwd(), config.dest);
 
-    if (!existsSync(srcDirPath)) await fs.promises.mkdir(srcDirPath);
-    if (!existsSync(destDirPath)) await fs.promises.mkdir(destDirPath);
+    if (!existsSync(srcDirPath)) mkdirSync(srcDirPath);
+    if (!existsSync(destDirPath)) mkdirSync(destDirPath);
 
     console.log('Watching: \x1b[1m' + srcDirPath + '\x1b[0m');
     console.log('Putting modified files in: \x1b[1m' + destDirPath + '\x1b[0m');
 
-    watch(srcDirPath, async (event, file) => {
-        if (!existsSync(destDirPath)) await fs.promises.mkdir(destDirPath);
+    watch(srcDirPath, (event, file) => {
+        if (!existsSync(destDirPath)) mkdirSync(destDirPath);
 
         let filePath = join(srcDirPath, file);
         let fileOutputPath = join(destDirPath, file);
-        let fileContentsBuffer = await fs.promises.readFile(filePath);
+        let fileContentsBuffer = readFileSync(filePath);
         let fileContents = fileContentsBuffer.toString();
 
         let shouldWrite = false;
@@ -68,6 +68,6 @@ export async function HeinousBuild() {
         if (shouldWrite) {
             console.log(`[${new Date().toLocaleString()}] updated ${filePath}`)
         }
-        await fs.promises.writeFile(fileOutputPath, fileContents);
+        writeFileSync(fileOutputPath, fileContents);
     });
 }
