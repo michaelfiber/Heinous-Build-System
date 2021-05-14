@@ -46,3 +46,19 @@ I use this in combination with a tsconfig file that builds my .ts files into .js
   },
   ...
 ```
+
+## Why would you do this?!?
+When I am testing out something new I'll often throw together a quick project.  My starting steps are usually:
+
+```bash
+npm init -y
+tsc --init
+npm install --save vue socket.io-client
+npm install --save-dev @types/vue @types/scoket.io-client
+```
+
+Then I update tsconfig to look in ./src/ for TS files and output JS to ./build/
+
+Inside any browser code I build can use ```import Vue from 'vue';``` to pull in Vue with full typings including correctly seeing data and methods. 
+
+Then, Heinous comes in and takes that import and fixes it to work in the browser in the copy i the ./dist/ folder.
