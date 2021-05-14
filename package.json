@@ -1,0 +1,18 @@
+{
+  "name": "heinous-build-system",
+  "version": "0.0.2",
+  "description": "A lightweight, fast, hacky build system primarily made for TypeScript + VueJS + Socket.IO",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Michael Richardson",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^15.0.3",
+    "typescript": "^4.2.4"
+  },
+  "bin": {
+    "heinous-build": "bin/build.js"
+  }
+}
