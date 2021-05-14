@@ -31,3 +31,18 @@ Using this config file:
   3. copy *./node_modules/socket.io-client/dist/socket.io.min.js* to the "dest" directory
 
 I use this in combination with a tsconfig file that builds my .ts files into .js files in the "build" directory. Then the instance of heinous-build-manager that is running sees those files created/changed and rewrites them based on the config and the result ends up in the "dist" directory. For my uses, this "dist" directory is the finished product during testing of new, rapidly developing, and generally very small projects.
+
+## Using Heinous Build System
+1. Install it with ```npm install --save-dev heinous-build-system```
+2. Add a ```rewrite.config.json``` file in the root of your project and add the rewrites you want and the src and dest directories.
+3. Add commands to the package.json. I use this:
+
+```json
+  ...
+  "scripts": {
+    "build": "tsc -w --preserveWatchOutput",
+    "heinous": "heinous-build",
+    "build-dist": "npm run build & npm run heinous"
+  },
+  ...
+```
