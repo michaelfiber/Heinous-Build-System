@@ -1,5 +1,12 @@
-# Philosophy
+# Heinous Build System
+This is built quickly and used internally on small experimental projects. Don't try to use this on something complex or important.
+
+## Philosophy
 This "build system" watches for JS files in a **source directory**, checks for `import` statements that reference **specific packages** and either rewrites or removes each matching `import` statement. The resulting file is written out to a **destination directory**. It can also copy specific files to the **destination directory**.
+
+Any non-JS file in the **source directory** will be copied to the **destination directory**.
+
+You can also specify files that you would like copied into the **destination directory** by adding the path (relative to project root) to the "copy" array in the config.
 
 A config file named **rewrite.config.json** at the root of your project is used to determine what to do.
 
@@ -16,7 +23,10 @@ A config file named **rewrite.config.json** at the root of your project is used 
             "remove": true,
             "fetchFrom": "./node_modules/socket.io-client/dist/socket.io.min.js"
         }
-    }
+    },
+    "copy": [
+        "./static/index.html"
+    ]
 }
 ```
 
