@@ -31,6 +31,8 @@ A config file named **rewrite.config.json** at the root of your project is used 
 ```
 
 Using this config file:
+* All files in the build folder are processed once when heinous-build is run and then the build folder is watched for changes.
+* All files listed under "copy" are copied once when heinous-build is run and then the paths are watched for changes.
 * if a JS file is saved to the "build" directory and it includes the line ```import Vue from 'vue';``` it will:
   1. rewrite that import to be ```import Vue from './vue.esm.browser.min.js';``` 
   2. save the result to the "dest" directory
@@ -39,6 +41,8 @@ Using this config file:
   1. remove that line completely 
   2. save the result to the "dest" directory
   3. copy *./node_modules/socket.io-client/dist/socket.io.min.js* to the "dest" directory
+* if any file listed under ```"copy": []``` is modified
+  1. the file is copied to the "dest" directory
 
 I use this in combination with a tsconfig file that builds my .ts files into .js files in the "build" directory. Then the instance of heinous-build-manager that is running sees those files created/changed and rewrites them based on the config and the result ends up in the "dist" directory. For my uses, this "dist" directory is the finished product during testing of new, rapidly developing, and generally very small projects.
 
