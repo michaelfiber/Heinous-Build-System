@@ -37,13 +37,12 @@ Example:
         fs_1.mkdirSync(srcDirPath);
     if (!fs_1.existsSync(destDirPath))
         fs_1.mkdirSync(destDirPath);
-    console.log('Watching: \x1b[1m' + srcDirPath + '\x1b[0m');
-    console.log('Putting modified files in: \x1b[1m' + destDirPath + '\x1b[0m');
-    const processFile = (event, file) => {
-        if (!fs_1.existsSync(destDirPath))
-            fs_1.mkdirSync(destDirPath);
-        let filePath = path_1.join(srcDirPath, file);
-        let fileOutputPath = path_1.join(destDirPath, file);
+    let watchedDirectories = [{ src: srcDirPath, dest: destDirPath }];
+    function processFile(event, file, srcPath, destPath) {
+        if (!fs_1.existsSync(destPath))
+            fs_1.mkdirSync(destPath);
+        let filePath = path_1.join(srcPath, file);
+        let fileOutputPath = path_1.join(destPath, file);
         if (!file.toLowerCase().endsWith('.js')) {
             let srcStat;
             try {
@@ -111,12 +110,34 @@ Example:
             console.log(`[${new Date().toLocaleString()}] updated ${filePath}`);
         }
         fs_1.writeFileSync(fileOutputPath, fileContents);
-    };
-    // on start process all the JS files in the dir.
-    for (let file of fs_1.readdirSync(srcDirPath)) {
-        processFile(null, file);
     }
-    fs_1.watch(srcDirPath, processFile);
+    // on start process all the JS files in the main src dir.
+    function processDir(srcDir, destDir) {
+        for (let file of fs_1.readdirSync(srcDir)) {
+            let stat = fs_1.statSync(path_1.join(srcDir, file));
+            if (stat.isFile())
+                processFile(null, file, srcDir, destDir);
+            else if (stat.isDirectory()) {
+                let newSrcDir = path_1.join(srcDir, file);
+                let newDestDir = path_1.join(destDir, file);
+                // add to watchedDirectories if it isn't already there.
+                let existing = watchedDirectories.filter(d => d.src == newSrcDir);
+                if (existing.length == 0) {
+                    watchedDirectories.push({
+                        src: newSrcDir,
+                        dest: newDestDir
+                    });
+                }
+                processDir(newSrcDir, newDestDir);
+            }
+        }
+    }
+    processDir(srcDirPath, destDirPath);
+    for (let watchedDir of watchedDirectories) {
+        console.log('Watching: \x1b[1m' + watchedDir.src + '\x1b[0m');
+        console.log('Putting modified files in: \x1b[1m' + watchedDir.dest + '\x1b[0m');
+        fs_1.watch(watchedDir.src, (event, file) => { processFile(event, file, watchedDir.src, watchedDir.dest); });
+    }
     // handle file copies - copy on start and then watch for changes.
     if (config.copy) {
         for (let srcCopyRelativePath of config.copy) {

@@ -4,7 +4,7 @@ This is built quickly and used internally on small experimental projects. Don't 
 ## Philosophy
 This "build system" watches for JS files in a **source directory**, checks for `import` statements that reference **specific packages** and either rewrites or removes each matching `import` statement. The resulting file is written out to a **destination directory**. It can also copy specific files to the **destination directory**.
 
-Any non-JS file in the **source directory** will be copied to the **destination directory**.
+Any non-JS file in the **source directory** will be copied to the **destination directory**. As of version 0.0.11, subdirectories without **source directory** will be traversed, its files checked and copied and those subdirectories will be watched for changes as well.
 
 You can also specify files that you would like copied into the **destination directory** by adding the path (relative to project root) to the "copy" array in the config.
 
