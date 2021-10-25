@@ -114,10 +114,19 @@ Example:
     // on start process all the JS files in the main src dir.
     function processDir(srcDir, destDir) {
         for (let file of fs_1.readdirSync(srcDir)) {
-            let stat = fs_1.statSync(path_1.join(srcDir, file));
-            if (stat.isFile())
+            let isDir = false;
+            let stat;
+            try {
+                stat = fs_1.statSync(path_1.join(srcDir, file));
+            }
+            catch (ex) {
+                if (ex.code == 'EISDIR') {
+                    isDir = true;
+                }
+            }
+            if ((stat && stat.isFile()))
                 processFile(null, file, srcDir, destDir);
-            else if (stat.isDirectory()) {
+            else if ((stat && stat.isDirectory()) || isDir) {
                 let newSrcDir = path_1.join(srcDir, file);
                 let newDestDir = path_1.join(destDir, file);
                 // add to watchedDirectories if it isn't already there.

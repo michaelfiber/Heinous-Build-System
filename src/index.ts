@@ -129,9 +129,19 @@ Example:
     // on start process all the JS files in the main src dir.
     function processDir(srcDir: string, destDir: string) {
         for (let file of readdirSync(srcDir)) {
-            let stat = statSync(join(srcDir, file));
-            if (stat.isFile()) processFile(null, file, srcDir, destDir);
-            else if (stat.isDirectory()) {
+            let isDir = false;
+            let stat;
+
+            try {
+                stat = statSync(join(srcDir, file));
+            } catch (ex) {
+                if (ex.code == 'EISDIR') {
+                    isDir = true;
+                }
+            }
+
+            if ((stat && stat.isFile())) processFile(null, file, srcDir, destDir);
+            else if ((stat && stat.isDirectory()) || isDir) {
                 let newSrcDir = join(srcDir, file);
                 let newDestDir = join(destDir, file);
 
