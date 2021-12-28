@@ -1,6 +1,6 @@
 {
   "name": "heinous-build-system",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "A lightweight, fast, hacky build system primarily made for TypeScript + VueJS + Socket.IO",
   "main": "dist/index.js",
   "scripts": {

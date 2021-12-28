@@ -4,9 +4,16 @@ exports.HeinousBuild = void 0;
 const fs_1 = require("fs");
 const path_1 = require("path");
 async function HeinousBuild() {
+    let configPathExists = true;
     let configPath = path_1.join(process.cwd(), "rewrite.config.json");
     if (!fs_1.existsSync(configPath)) {
-        console.log('No config. Please create a rewrite.config.json file in the base of your project and fill it with a data structure that describes the rewrites you would like.');
+        configPath = path_1.join(process.cwd(), "heinous.json");
+        if (!fs_1.existsSync(configPath)) {
+            configPathExists = false;
+        }
+    }
+    if (!configPathExists) {
+        console.log('No config. Please create a rewrite.config.json or heinous.json file in the base of your project and fill it with a data structure that describes the rewrites you would like.');
         console.log(`
 Example:
 
@@ -20,7 +27,8 @@ Example:
             },
             "socket.io-client": {
                 "remove": true,
-                "fetchFrom": "./node_modules/socket.io-client/dist/socket.io.min.js"
+                "fetchFrom": "./node_modules/socket.io-client/dist/socket.io.min.js",
+                "placeIn": "client"
             }
         },
         "copy": [
@@ -84,6 +92,9 @@ Example:
                     let copyFromPath = path_1.join(process.cwd(), config.map[aliasTarget].fetchFrom);
                     let parts = config.map[aliasTarget].fetchFrom.split('/');
                     let copyToPath = path_1.join(destDirPath, parts[parts.length - 1]);
+                    if (config.map[aliasTarget].placeIn) {
+                        copyToPath = path_1.join(destDirPath, config.map[aliasTarget].placeIn, parts[parts.length - 1]);
+                    }
                     try {
                         fs_1.copyFileSync(copyFromPath, copyToPath);
                     }
