@@ -8,7 +8,7 @@ Any non-JS file in the **source directory** will be copied to the **destination 
 
 You can also specify files that you would like copied into the **destination directory** by adding the path (relative to project root) to the "copy" array in the config.
 
-A config file named **rewrite.config.json** at the root of your project is used to determine what to do.
+A config file named **rewrite.config.json** or **heinous.json** at the root of your project is used to determine what to do.
 
 ```json
 {
@@ -17,7 +17,8 @@ A config file named **rewrite.config.json** at the root of your project is used 
     "map": {
         "vue": {
             "rewrite": "./vue.esm.browser.min.js",
-            "fetchFrom": "./node_modules/vue/dist/vue.esm.browser.min.js"
+            "fetchFrom": "./node_modules/vue/dist/vue.esm.browser.min.js",
+            "placeIn": "client"
         },
         "socket.io-client": {
             "remove": true,
@@ -36,7 +37,7 @@ Using this config file:
 * if a JS file is saved to the "build" directory and it includes the line ```import Vue from 'vue';``` it will:
   1. rewrite that import to be ```import Vue from './vue.esm.browser.min.js';``` 
   2. save the result to the "dest" directory
-  3. copy *./node_modules/vue/dist/vue.esm.browser.min.js* to the "dest" directory
+  3. copy *./node_modules/vue/dist/vue.esm.browser.min.js* to the "dest/client" directory because ```"placeIn": "client"``` is specified.
 * if a JS file is saved to the "build" directory and it includes ```import io from 'socket.io-client';``` it will:
   1. remove that line completely 
   2. save the result to the "dest" directory
