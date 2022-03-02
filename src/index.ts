@@ -1,5 +1,40 @@
-import fs, { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, watch, writeFileSync } from "fs";
-import { join } from "path";
+import fs, { copyFileSync, existsSync, FSWatcher, mkdirSync, readdirSync, readFileSync, statSync, watch, writeFileSync } from "fs";
+import path, { join } from "path";
+
+export async function LessHeinousBuild() {
+    let watchedPaths: { [key: string]: {
+        watcher?: FSWatcher;
+        destination: string;
+    }};
+
+    let configPath = path.join(process.cwd(), 'heinous.json');
+    let configBuffer: Buffer | undefined;
+
+    try {
+        let stat = await fs.promises.stat(configPath);
+        if (stat.isFile()) {
+            configBuffer = await fs.promises.readFile(configPath);
+        }
+    } catch (ex) {
+        return console.error('Failed to open the config file. Do you have a heinous.json file in your project directory?');
+    }
+
+    if (!configBuffer) {
+        return console.error('The config file could not be read. Do you have a heinous.json file in your project directory?');
+    }
+
+    let config = JSON.parse(configBuffer.toString());
+
+    if (!config.src) {
+        return console.error('Your heinous.json needs to specify a "src" path.');
+    }
+
+    if (!config.dest) {
+        return console.error('Your heinous.json needs to specify a "dest" path.')
+    }
+
+    
+}
 
 export async function HeinousBuild() {
 
